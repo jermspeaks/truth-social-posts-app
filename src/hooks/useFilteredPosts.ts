@@ -1,7 +1,10 @@
 import { useMemo } from 'react'
+import { fromZonedTime } from 'date-fns-tz'
 import type { Post } from '@/types/post'
 import { sortPosts } from '@/lib/sortFns'
 import type { useUrlFilters } from './useUrlFilters'
+
+const LA_TZ = 'America/Los_Angeles'
 
 type Filters = ReturnType<typeof useUrlFilters>['filters']
 
@@ -12,8 +15,8 @@ export function useFilteredPosts(posts: Post[] | null, filters: Filters) {
     const { q, sort, from, to } = filters
 
     const queryLower = q.toLowerCase()
-    const fromTime = from ? new Date(from).getTime() : null
-    const toTime = to ? new Date(to + 'T23:59:59').getTime() : null
+    const fromTime = from ? fromZonedTime(`${from}T00:00:00`, LA_TZ).getTime() : null
+    const toTime = to ? fromZonedTime(`${to}T23:59:59`, LA_TZ).getTime() : null
 
     let result = posts
 

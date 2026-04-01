@@ -17,7 +17,7 @@ export type SortOption =
   | 'most_reblogs'
   | 'most_likes'
 
-export type QuickFilter = 'first_term' | 'post_presidency' | 'second_term'
+export type QuickFilter = 'post_presidency' | 'second_term'
 
 export const SORT_LABELS: Record<SortOption, string> = {
   newest: 'Newest first',

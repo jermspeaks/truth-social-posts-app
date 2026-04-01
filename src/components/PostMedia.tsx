@@ -1,5 +1,15 @@
 import { useState } from 'react'
 
+const VIDEO_EXTS = ['.mp4', '.mov', '.webm', '.ogg', '.m4v']
+const IMAGE_EXTS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif']
+
+function getMediaType(src: string): 'image' | 'video' | 'unknown' {
+  const lower = src.split('?')[0].toLowerCase()
+  if (VIDEO_EXTS.some((ext) => lower.endsWith(ext))) return 'video'
+  if (IMAGE_EXTS.some((ext) => lower.endsWith(ext))) return 'image'
+  return 'image' // default to image for extensionless CDN URLs
+}
+
 interface Props {
   media: string[]
 }
@@ -11,32 +21,46 @@ export function PostMedia({ media }: Props) {
   const visible = media.filter((src) => !failed.has(src))
   if (visible.length === 0) return null
 
-  const gridClass =
-    visible.length === 1
-      ? 'grid-cols-1'
-      : visible.length === 2
-        ? 'grid-cols-2'
-        : 'grid-cols-2'
+  const gridClass = visible.length === 1 ? 'grid-cols-1' : 'grid-cols-2'
 
   return (
     <>
       <div className={`grid ${gridClass} gap-1.5 mt-3 rounded-xl overflow-hidden`}>
-        {visible.map((src) => (
-          <button
-            key={src}
-            onClick={() => setLightboxSrc(src)}
-            className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            aria-label="View full image"
-          >
-            <img
-              src={src}
-              alt=""
-              loading="lazy"
-              className="w-full h-48 object-cover hover:opacity-90 transition-opacity cursor-zoom-in"
-              onError={() => setFailed((prev) => new Set([...prev, src]))}
-            />
-          </button>
-        ))}
+        {visible.map((src) => {
+          const type = getMediaType(src)
+
+          if (type === 'video') {
+            return (
+              <video
+                key={src}
+                src={src}
+                controls
+                playsInline
+                preload="metadata"
+                className="w-full aspect-video rounded-xl bg-black"
+                onError={() => setFailed((prev) => new Set([...prev, src]))}
+                aria-label="Post video"
+              />
+            )
+          }
+
+          return (
+            <button
+              key={src}
+              onClick={() => setLightboxSrc(src)}
+              className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label="View full image"
+            >
+              <img
+                src={src}
+                alt=""
+                loading="lazy"
+                className="w-full h-48 object-cover hover:opacity-90 transition-opacity cursor-zoom-in"
+                onError={() => setFailed((prev) => new Set([...prev, src]))}
+              />
+            </button>
+          )
+        })}
       </div>
 
       {lightboxSrc && (
