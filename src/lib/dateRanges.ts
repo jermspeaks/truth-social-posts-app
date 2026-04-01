@@ -8,12 +8,6 @@ export interface TermRange {
 }
 
 export const TERM_RANGES: Record<QuickFilter, TermRange> = {
-  first_term: {
-    from: '2017-01-20',
-    to: '2021-01-20',
-    label: 'First Term',
-    description: 'Jan 2017 – Jan 2021',
-  },
   post_presidency: {
     from: '2021-01-20',
     to: '2025-01-20',

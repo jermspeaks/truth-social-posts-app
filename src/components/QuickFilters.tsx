@@ -7,7 +7,7 @@ interface Props {
   onSelect: (filter: QuickFilter) => void
 }
 
-const FILTERS: QuickFilter[] = ['first_term', 'post_presidency', 'second_term']
+const FILTERS: QuickFilter[] = ['post_presidency', 'second_term']
 
 export function QuickFilters({ active, onSelect }: Props) {
   return (
