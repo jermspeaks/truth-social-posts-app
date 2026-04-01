@@ -14,7 +14,7 @@ export function PostFeed({ posts, searchQuery }: Props) {
   const virtualizer = useWindowVirtualizer({
     count: posts.length,
     estimateSize: () => 240,
-    overscan: 4,
+    overscan: 2,
     scrollMargin: listRef.current?.offsetTop ?? 0,
   })
 
